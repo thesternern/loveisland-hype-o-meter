@@ -5,13 +5,13 @@
       "episode": 13,
       "results_air": "2026-06-18",
       "predicted_safe": [
+        "sol_caleb",
         "trinity_bryce",
         "kaniya",
-        "kayda_zach",
-        "melanie_sincere"
+        "kayda_zach"
       ],
       "predicted_vulnerable": [
-        "sol_caleb",
+        "melanie_sincere",
         "jen_gabe"
       ],
       "actual_eliminated": [],

@@ -17,7 +17,9 @@
     "date_filter": "PAST_WEEK",
     "video_search_sorting": "MOST_RELEVANT",
     "proxy_country_code": "US",
-    "general_tags": ["LoveIslandUSA", "LoveIslandSeason8", "loveisland"]
+    "general_tags": ["LoveIslandUSA", "LoveIslandSeason8", "loveisland"],
+    "since": "2026-06-17T01:00:00Z",
+    "window_label": "since the Ep13 recoupling (Jun 16, 9pm ET)"
   },
   "couples": [
     {

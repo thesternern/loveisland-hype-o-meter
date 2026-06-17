@@ -14,6 +14,7 @@ import argparse
 import json
 import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 # Make sibling modules importable when run as `python src/pipeline.py`.
@@ -33,6 +34,23 @@ CONFIG_PATH = ROOT / "config" / "round.json"
 
 def _load_config() -> dict:
     return json.loads(CONFIG_PATH.read_text())
+
+
+def _filter_since(posts, comments, since_iso):
+    """Keep only items created at/after `since_iso`. Applied AFTER resolution so
+    recent comments on older videos still inherit the right couple."""
+    cut = datetime.fromisoformat(since_iso.replace("Z", "+00:00"))
+
+    def keep(it):
+        s = it.get("created_at")
+        if not s:
+            return False
+        try:
+            return datetime.fromisoformat(s.replace("Z", "+00:00")) >= cut
+        except (ValueError, TypeError):
+            return False
+
+    return [p for p in posts if keep(p)], [c for c in comments if keep(c)]
 
 
 def _confirm_spend(estimate: dict, dry_run: bool, assume_yes: bool) -> None:
@@ -90,10 +108,21 @@ def main() -> None:
     if not posts:
         sys.exit("  No posts returned — check queries/actor; nothing to score.")
 
-    # 2. Entity resolution
+    # 2. Entity resolution (on the full pull, so comment->couple inheritance is intact)
     matchers = er.build_matchers(config)
     er.resolve_posts(posts, matchers)
     er.resolve_comments(comments, posts, matchers)
+
+    # 2b. Optional recency window (e.g. only buzz since the last episode aired)
+    since = config.get("scan", {}).get("since")
+    if since:
+        before = (len(posts), len(comments))
+        posts, comments = _filter_since(posts, comments, since)
+        print(f"  [pipeline] recency filter since {since}: "
+              f"{before[0]}->{len(posts)} posts, {before[1]}->{len(comments)} comments", file=sys.stderr)
+        if not posts:
+            sys.exit("  No posts remain after the recency filter. Loosen scan.since.")
+
     summary = er.summarize(posts, comments)
     print("  [pipeline] resolution by couple:", file=sys.stderr)
     for cid, counts in sorted(summary.items()):
@@ -108,7 +137,8 @@ def main() -> None:
     rows, score_meta = scoring.score(config, posts, comments, sent)
 
     # 5. Render
-    scan_stats = {"posts": len(posts), "comments": len(comments), "dry_run": dry_run}
+    scan_stats = {"posts": len(posts), "comments": len(comments), "dry_run": dry_run,
+                  "since": since, "window_label": config.get("scan", {}).get("window_label")}
     render_mod.render(config, rows, score_meta, scan_stats)
 
     # Console leaderboard
