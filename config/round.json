@@ -1,0 +1,94 @@
+{
+  "show": "Love Island USA",
+  "season": 8,
+  "vote": {
+    "type": "favorite_couple",
+    "title": "America's Favorite Couple",
+    "stakes": "Top couples are SAFE. The least-voted couples are VULNERABLE and at risk of being dumped from the Island.",
+    "episode": 13,
+    "vote_closed": "2026-06-16",
+    "results_air": "2026-06-18"
+  },
+  "cut_line": { "n_safe": 4, "n_vulnerable": 2 },
+  "scan": {
+    "platform": "tiktok",
+    "results_per_couple": 25,
+    "comments_per_post": 10,
+    "date_filter": "PAST_WEEK",
+    "video_search_sorting": "MOST_RELEVANT",
+    "proxy_country_code": "US",
+    "general_tags": ["LoveIslandUSA", "LoveIslandSeason8", "loveisland"]
+  },
+  "couples": [
+    {
+      "id": "kaniya",
+      "display": "Aniya & KC",
+      "ship_names": ["Kaniya", "KCniya"],
+      "islanders": [
+        { "name": "Aniya Harvey", "first": "Aniya", "handle": "aniyaharvey02" },
+        { "name": "KC Chandler", "first": "KC", "handle": "kc.thagreat" }
+      ],
+      "search_terms": ["Aniya Harvey", "Aniya", "aniyaharvey02", "KC Chandler", "kc.thagreat", "Kaniya", "KCniya"]
+    },
+    {
+      "id": "trinity_bryce",
+      "display": "Trinity & Bryce",
+      "ship_names": [],
+      "islanders": [
+        { "name": "Trinity Tatum", "first": "Trinity", "handle": "soootrini" },
+        { "name": "Bryce Dettloff", "first": "Bryce", "handle": "brycealakai" }
+      ],
+      "search_terms": ["Trinity Tatum", "Trinity", "soootrini", "Bryce Dettloff", "Bryce", "brycealakai"]
+    },
+    {
+      "id": "kayda_zach",
+      "display": "Kayda & Zach",
+      "ship_names": ["Zryce"],
+      "islanders": [
+        { "name": "Kayda Bosse", "first": "Kayda", "handle": "kaydabosse" },
+        { "name": "Zach Georgiou", "first": "Zach", "handle": "zachgeorgio" }
+      ],
+      "search_terms": ["Kayda Bosse", "Kayda", "kaydabosse", "Zach Georgiou", "Zach", "zachgeorgio", "Zryce"]
+    },
+    {
+      "id": "jen_gabe",
+      "display": "Jen & Gabriel",
+      "ship_names": [],
+      "islanders": [
+        { "name": "Jen Terry", "first": "Jen", "handle": "jennifertterry" },
+        { "name": "Gabriel Vasconcelos", "first": "Gabriel", "handle": "gvasconcelosv" }
+      ],
+      "search_terms": ["Jen Terry", "Jennifer Terry", "jennifertterry", "Gabriel Vasconcelos", "Gabriel", "Gabe", "gvasconcelosv"]
+    },
+    {
+      "id": "kenzie_corbin",
+      "display": "Kenzie & Corbin",
+      "ship_names": [],
+      "islanders": [
+        { "name": "Kenzie Annis", "first": "Kenzie", "handle": "kenzieannis" },
+        { "name": "Corbin Mims", "first": "Corbin", "handle": "corbiskii" }
+      ],
+      "search_terms": ["Kenzie Annis", "Kenzie", "Mackenzie Annis", "kenzieannis", "Corbin Mims", "Corbin", "corbiskii"]
+    },
+    {
+      "id": "melanie_sincere",
+      "display": "Melanie & Sincere",
+      "ship_names": [],
+      "islanders": [
+        { "name": "Melanie Moreno", "first": "Melanie", "handle": "melanieelisa" },
+        { "name": "Sincere Rhea", "first": "Sincere", "handle": "sincere.rhea" }
+      ],
+      "search_terms": ["Melanie Moreno", "Melanie", "melanieelisa", "Sincere Rhea", "Sincere", "sincere.rhea"]
+    },
+    {
+      "id": "sol_caleb",
+      "display": "Sol & Caleb",
+      "ship_names": [],
+      "islanders": [
+        { "name": "Sol Dean", "first": "Sol", "handle": "itssoll" },
+        { "name": "Caleb McDaniel", "first": "Caleb", "handle": "calebbmcdaniell" }
+      ],
+      "search_terms": ["Sol Dean", "Sol", "itssoll", "Caleb McDaniel", "Caleb", "calebbmcdaniell"]
+    }
+  ]
+}

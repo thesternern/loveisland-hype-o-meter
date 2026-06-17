@@ -1,0 +1,17 @@
+# Secrets — NEVER commit
+.env
+
+# Raw scrape dumps (audit trail, can be large; re-scoring uses these locally)
+data/raw/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env.local
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

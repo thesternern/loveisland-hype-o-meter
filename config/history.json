@@ -1,0 +1,22 @@
+{
+  "rounds": [
+    {
+      "vote": "America's Favorite Couple",
+      "episode": 13,
+      "results_air": "2026-06-18",
+      "predicted_safe": [
+        "trinity_bryce",
+        "kaniya",
+        "kayda_zach",
+        "melanie_sincere"
+      ],
+      "predicted_vulnerable": [
+        "sol_caleb",
+        "jen_gabe"
+      ],
+      "actual_eliminated": [],
+      "correct": null,
+      "scored": false
+    }
+  ]
+}

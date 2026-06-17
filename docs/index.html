@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Hype-O-Meter · Love Island USA</title>
+<meta name="description" content="A for-fun forecast of which Love Island USA couples are SAFE vs VULNERABLE, scored from public TikTok buzz and sentiment.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:        oklch(0.17 0.045 295);
+    --bg-2:      oklch(0.14 0.05 280);
+    --surface:   oklch(0.225 0.04 295);
+    --surface-2: oklch(0.27 0.042 295);
+    --line:      oklch(0.34 0.03 295);
+    --line-soft: oklch(0.30 0.025 295 / 0.5);
+    --text:      oklch(0.96 0.012 85);
+    --muted:     oklch(0.73 0.02 290);
+    --faint:     oklch(0.58 0.02 290);
+    --heat:      oklch(0.72 0.20 35);
+    --heat-dim:  oklch(0.72 0.20 35 / 0.16);
+    --love:      oklch(0.85 0.13 182);
+    --safe:      oklch(0.82 0.15 160);
+    --safe-dim:  oklch(0.82 0.15 160 / 0.14);
+    --warn:      oklch(0.81 0.16 72);
+    --warn-dim:  oklch(0.81 0.16 72 / 0.13);
+    --danger:    oklch(0.67 0.23 16);
+    --danger-dim:oklch(0.67 0.23 16 / 0.16);
+    --gold:      oklch(0.86 0.13 92);
+    --sp: clamp(16px, 4vw, 40px);
+    --maxw: 940px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(120% 80% at 85% -10%, oklch(0.32 0.10 25 / 0.30), transparent 55%),
+      radial-gradient(120% 90% at 0% 0%, oklch(0.30 0.10 300 / 0.35), transparent 50%),
+      linear-gradient(165deg, var(--bg), var(--bg-2));
+    background-attachment:fixed;
+    min-height:100vh;
+    line-height:1.5;
+    font-feature-settings:"tnum" 1, " cv11" 1;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:var(--sp)}
+  a{color:var(--love);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---- header ---- */
+  header{padding:clamp(28px,6vw,64px) 0 8px}
+  .kicker{
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:12.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--heat);
+  }
+  .kicker::before{content:"";width:26px;height:2px;background:var(--heat);border-radius:2px}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--heat);box-shadow:0 0 0 0 var(--heat);animation:pulse 2.4s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 oklch(0.72 0.20 35 / 0.6)}70%{box-shadow:0 0 0 10px oklch(0.72 0.20 35 / 0)}100%{box-shadow:0 0 0 0 oklch(0.72 0.20 35 / 0)}}
+  h1{
+    font-family:'Fraunces',Georgia,serif;
+    font-optical-sizing:auto;
+    font-weight:800;
+    font-size:clamp(44px,11vw,104px);
+    line-height:0.92;
+    letter-spacing:-0.02em;
+    margin:14px 0 6px;
+  }
+  h1 em{font-style:italic;color:var(--heat);font-weight:700}
+  .dek{font-size:clamp(15px,2.2vw,19px);color:var(--muted);max-width:60ch}
+  .dek b{color:var(--text);font-weight:600}
+
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+  .chip{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:7px 13px;border-radius:999px;
+    background:var(--surface);border:1px solid var(--line);
+    font-size:13px;font-weight:600;color:var(--muted);
+  }
+  .chip b{color:var(--text)}
+  .badge-acc{
+    background:linear-gradient(180deg, var(--surface-2), var(--surface));
+    border:1px solid var(--gold);color:var(--gold);
+    box-shadow:0 0 24px oklch(0.86 0.13 92 / 0.12);
+  }
+  .badge-acc .tick{font-size:14px}
+
+  /* ---- controls ---- */
+  .panel{
+    margin:34px 0 10px;padding:18px 20px;border-radius:18px;
+    background:var(--surface);border:1px solid var(--line);
+  }
+  .panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .panel-head h2{font-family:'Inter';font-size:12.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);font-weight:700}
+  .reset{
+    background:none;border:1px solid var(--line);color:var(--muted);
+    font:inherit;font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer;
+    transition:border-color .2s, color .2s;
+  }
+  .reset:hover{border-color:var(--heat);color:var(--heat)}
+  .sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px 22px;margin-top:14px}
+  .slider label{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:7px}
+  .slider .val{font-variant-numeric:tabular-nums}
+  .slider input[type=range]{width:100%;height:4px;-webkit-appearance:none;appearance:none;background:var(--line);border-radius:4px;outline:none}
+  .slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--c, var(--heat));cursor:pointer;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--c, var(--heat))}
+  .slider input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--c, var(--heat));cursor:pointer;border:3px solid var(--surface)}
+  .slider.sov{--c:var(--heat)} .slider.sent{--c:var(--love)} .slider.vel{--c:var(--gold)} .slider.auth{--c:var(--safe)}
+  .panel-note{font-size:12.5px;color:var(--faint);margin-top:14px}
+
+  /* ---- leaderboard ---- */
+  .board{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+  .row{
+    position:relative;display:grid;
+    grid-template-columns:48px 1fr auto;gap:16px;align-items:center;
+    padding:16px 18px;border-radius:16px;
+    background:var(--surface);border:1px solid var(--line);
+    will-change:transform;
+  }
+  .row.safe{border-color:oklch(0.82 0.15 160 / 0.45)}
+  .row.vulnerable{border-color:oklch(0.81 0.16 72 / 0.5);background:linear-gradient(180deg,var(--warn-dim),var(--surface))}
+  .row.hate{border-color:oklch(0.67 0.23 16 / 0.6);background:linear-gradient(180deg,var(--danger-dim),var(--surface))}
+  .rank{font-family:'Fraunces',serif;font-weight:700;font-size:34px;line-height:1;color:var(--faint);text-align:center}
+  .row.safe .rank{color:var(--safe)}
+  .row.vulnerable .rank{color:var(--warn)}
+  .row.hate .rank{color:var(--danger)}
+
+  .who{min-width:0}
+  .names{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+  .monos{display:flex}
+  .mono{
+    width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+    font-size:11px;font-weight:800;color:oklch(0.16 0.03 295);
+    border:2px solid var(--surface);margin-left:-8px;
+  }
+  .mono:first-child{margin-left:0}
+  .cname{font-family:'Fraunces',serif;font-weight:600;font-size:22px;letter-spacing:-0.01em}
+  .tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+  .tag{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border-radius:6px}
+  .tag.safe{background:var(--safe-dim);color:var(--safe)}
+  .tag.vuln{background:var(--warn-dim);color:var(--warn)}
+  .tag.bubble{background:oklch(0.5 0.02 290 / 0.25);color:var(--muted)}
+  .tag.hate{background:var(--danger-dim);color:var(--danger)}
+  .tag.ship{background:var(--heat-dim);color:var(--heat)}
+  .hate-note{margin-top:10px;font-size:12.5px;font-weight:600;color:var(--danger);max-width:48ch;line-height:1.45}
+
+  .signals{margin-top:13px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 18px;max-width:520px}
+  .sig{display:grid;grid-template-columns:74px 1fr 34px;gap:8px;align-items:center;font-size:11.5px;color:var(--muted)}
+  .sig .lab{font-weight:600;letter-spacing:0.02em}
+  .track{height:6px;border-radius:6px;background:oklch(0.5 0.02 290 / 0.25);overflow:hidden}
+  .fill{height:100%;border-radius:6px;transform-origin:left;transition:width .5s cubic-bezier(.16,1,.3,1)}
+  .fill.sov{background:var(--heat)} .fill.vel{background:var(--gold)} .fill.auth{background:var(--safe)}
+  .sig .num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text);font-weight:600}
+  /* sentiment diverging */
+  .sent-track{position:relative;height:6px;border-radius:6px;background:oklch(0.5 0.02 290 / 0.22)}
+  .sent-mid{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--line)}
+  .sent-fill{position:absolute;top:0;bottom:0;border-radius:4px}
+  .sent-fill.pos{background:var(--love);left:50%}
+  .sent-fill.neg{background:var(--danger);right:50%}
+
+  .score{text-align:right;min-width:96px}
+  .heatbar{height:7px;width:96px;border-radius:6px;background:oklch(0.5 0.02 290 / 0.25);overflow:hidden;margin:8px 0 0 auto}
+  .heatbar i{display:block;height:100%;background:linear-gradient(90deg,var(--heat),var(--gold))}
+  .hype{font-family:'Inter';font-weight:800;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+  .hype .unit{font-size:12px;color:var(--faint);font-weight:600;margin-left:2px}
+  .score .lbl{font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--faint);font-weight:700;margin-bottom:5px}
+  .intent{display:flex;height:5px;width:96px;border-radius:5px;overflow:hidden;margin:9px 0 0 auto;background:oklch(0.5 0.02 290 / 0.25)}
+  .intent .s{background:var(--safe)} .intent .n{background:var(--faint)} .intent .e{background:var(--danger)}
+
+  /* safe line divider */
+  .safeline{display:flex;align-items:center;gap:14px;margin:6px 2px;color:var(--warn);font-size:12px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase}
+  .safeline::before,.safeline::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--warn),transparent);opacity:.7}
+
+  /* ---- methodology / footer ---- */
+  details.method{margin-top:30px;border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden}
+  details.method summary{cursor:pointer;padding:16px 20px;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  details.method summary::-webkit-details-marker{display:none}
+  details.method summary .plus{color:var(--heat);font-size:20px;transition:transform .3s}
+  details.method[open] summary .plus{transform:rotate(45deg)}
+  .method-body{padding:0 20px 20px;color:var(--muted);font-size:14px;max-width:72ch}
+  .method-body p{margin:10px 0}
+  .method-body code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:oklch(0.5 0.02 290 / 0.2);padding:2px 6px;border-radius:5px;color:var(--text)}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0 4px}
+  .legend span{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted)}
+  .legend i{width:11px;height:11px;border-radius:3px}
+  .disclaimer{margin:22px 0 6px;padding:14px 16px;border:1px dashed var(--line);border-radius:12px;color:var(--faint);font-size:12.5px;line-height:1.55}
+  footer{margin:18px 0 50px;color:var(--faint);font-size:12.5px;display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:space-between}
+
+  @media (max-width:620px){
+    .row{grid-template-columns:38px 1fr;grid-template-areas:"rank who" "score score"}
+    .rank{grid-area:rank;font-size:26px}
+    .who{grid-area:who}
+    .score{grid-area:score;text-align:left;display:flex;align-items:center;gap:16px;margin-top:6px;flex-wrap:wrap}
+    .heatbar,.intent{margin:0}
+    .signals{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="kicker"><span class="live-dot"></span> <span id="k-show">Love Island USA · Season 8</span></span>
+    <h1>The <em>Hype</em><br>O-Meter</h1>
+    <p class="dek" id="dek">Loading the latest buzz…</p>
+    <div class="meta-row" id="meta-row"></div>
+  </header>
+
+  <section class="panel" aria-label="Signal weights">
+    <div class="panel-head">
+      <h2>Tune the model: drag to reweight, the board re-ranks live</h2>
+      <button class="reset" id="reset">Reset to default</button>
+    </div>
+    <div class="sliders" id="sliders"></div>
+    <p class="panel-note">HypeScore blends four signals, each z-scored across the current couples. Move a slider to ask "what if buzz mattered more than sentiment?" and watch the order change.</p>
+  </section>
+
+  <main class="board" id="board" aria-live="polite"></main>
+
+  <details class="method">
+    <summary>How the forecast works <span class="plus">+</span></summary>
+    <div class="method-body">
+      <p>Each couple's TikTok posts and comments are scored on four signals, then combined:</p>
+      <p><code>HypeScore = 100 × (w₁·ShareOfVoice + w₂·Sentiment + w₃·Velocity + w₄·Reach)</code>, where each signal is a z-score across the current couples and the weights are the sliders above.</p>
+      <p><b>Share of Voice:</b> how much of the total chatter is about this couple. <b>Sentiment:</b> engagement-weighted positivity of captions and comments (VADER), refined by a Claude pass that reads voting intent (save vs. eliminate) and catches sarcasm. <b>Velocity:</b> whether buzz is heating up or cooling within the scan window. <b>Reach:</b> distinct accounts talking, capped at one per author so a single superfan can't inflate the count.</p>
+      <p>A couple that is <b>loud but loathed</b> (lots of chatter, but the room wants them gone) is flagged <span style="color:var(--danger);font-weight:700">hate-watch</span> and pushed below the safe line, because volume alone fools naive models.</p>
+      <div class="legend">
+        <span><i style="background:var(--heat)"></i> Share of Voice</span>
+        <span><i style="background:var(--love)"></i> Sentiment</span>
+        <span><i style="background:var(--gold)"></i> Velocity</span>
+        <span><i style="background:var(--safe)"></i> Reach</span>
+        <span><i style="background:var(--danger)"></i> Hate-watch</span>
+      </div>
+    </div>
+  </details>
+
+  <p class="disclaimer" id="disclaimer"></p>
+  <footer>
+    <span id="gen"></span>
+    <span>Built with Apify + a pinch of Claude · <a href="https://github.com/thesternern/loveisland-hype-o-meter" id="repo">source</a></span>
+  </footer>
+</div>
+
+<!--HYPE_DATA_START--><script id="hype-data" type="application/json">{"meta": {"show": "Love Island USA", "season": 8, "vote": {"type": "favorite_couple", "title": "America's Favorite Couple", "stakes": "Top couples are SAFE. The least-voted couples are VULNERABLE and at risk of being dumped from the Island.", "episode": 13, "vote_closed": "2026-06-16", "results_air": "2026-06-18"}, "cut_line": {"n_safe": 4, "n_vulnerable": 2}, "generated_at": "2026-06-17T20:50:16.557037+00:00", "scan": {"platform": "tiktok", "posts": 573, "comments": 3251, "general_items": 1047, "dry_run": false}, "velocity_method": "intra_pull_recency", "weights": {"sov": 0.35, "sentiment": 0.3, "velocity": 0.2, "authors": 0.15}, "accuracy": {"correct": 0, "scored": 0, "label": "Track record starts at the next result"}, "disclaimer": "Entertainment only: predictions come from public TikTok buzz + sentiment, NOT real vote data. Social volume skews younger and more online than the actual voting base, and can be brigaded. A fun model, not a poll."}, "couples": [{"id": "trinity_bryce", "display": "Trinity & Bryce", "ship_names": [], "islanders": ["Trinity Tatum", "Bryce Dettloff"], "raw": {"share_of_voice": 0.14656103709038532, "eng_weighted_sentiment": 0.4520628446748014, "velocity": 2.9175396222809784, "unique_authors": 381, "post_count": 61, "comment_count": 346, "n_save": 172, "n_eliminate": 21, "n_neutral": 91, "net_intent": 151, "sentiment_source": "haiku:claude-haiku-4-5-20251001"}, "z": {"sov": 0.07061131465889817, "sentiment": 1.9607348974165413, "velocity": 1.3502243784995234, "authors": 0.041336935974395264}, "hype_score": 88.92, "hate_watch_flag": false, "rank": 1, "status": "SAFE"}, {"id": "kaniya", "display": "Aniya & KC", "ship_names": ["Kaniya", "KCniya"], "islanders": ["Aniya Harvey", "KC Chandler"], "raw": {"share_of_voice": 0.17464890169247388, "eng_weighted_sentiment": 0.08165227016933647, "velocity": 2.945319294172968, "unique_authors": 455, "post_count": 62, "comment_count": 423, "n_save": 118, "n_eliminate": 63, "n_neutral": 196, "net_intent": 55, "sentiment_source": "haiku:claude-haiku-4-5-20251001"}, "z": {"sov": 0.6060804508222066, "sentiment": -0.13418242934113672, "velocity": 1.5598632363767022, "authors": 0.6048246421516764}, "hype_score": 57.46, "hate_watch_flag": false, "rank": 2, "status": "SAFE"}, {"id": "kayda_zach", "display": "Kayda & Zach", "ship_names": ["Zryce"], "islanders": ["Kayda Bosse", "Zach Georgiou"], "raw": {"share_of_voice": 0.21498019445444724, "eng_weighted_sentiment": -0.004806365203565102, "velocity": 2.704860164424191, "unique_authors": 535, "post_count": 91, "comment_count": 506, "n_save": 113, "n_eliminate": 84, "n_neutral": 196, "net_intent": 29, "sentiment_source": "haiku:claude-haiku-4-5-20251001"}, "z": {"sov": 1.3749592104413169, "sentiment": -0.623163321780112, "velocity": -0.25475781180098134, "authors": 1.21400054072171}, "hype_score": 42.54, "hate_watch_flag": false, "rank": 3, "status": "SAFE"}, {"id": "melanie_sincere", "display": "Melanie & Sincere", "ship_names": [], "islanders": ["Melanie Moreno", "Sincere Rhea"], "raw": {"share_of_voice": 0.1321570039611091, "eng_weighted_sentiment": 0.05504005621470214, "velocity": 2.73119930543591, "unique_authors": 356, "post_count": 48, "comment_count": 319, "n_save": 92, "n_eliminate": 65, "n_neutral": 122, "net_intent": 27, "sentiment_source": "haiku:claude-haiku-4-5-20251001"}, "z": {"sov": -0.20398824234792715, "sentiment": -0.28469213925257286, "velocity": -0.05598989759984352, "authors": -0.14903053232874025}, "hype_score": -19.04, "hate_watch_flag": false, "rank": 4, "status": "SAFE"}, {"id": "kenzie_corbin", "display": "Kenzie & Corbin", "ship_names": [], "islanders": ["Kenzie Annis", "Corbin Mims"], "raw": {"share_of_voice": 0.16384587684551674, "eng_weighted_sentiment": -0.1350147617114939, "velocity": 2.6936530146832847, "unique_authors": 440, "post_count": 60, "comment_count": 395, "n_save": 78, "n_eliminate": 116, "n_neutral": 132, "net_intent": -38, "sentiment_source": "haiku:claude-haiku-4-5-20251001"}, "z": {"sov": 0.400130783067088, "sentiment": -1.3595781131180131, "velocity": -0.3393323914028254, "authors": 0.4906041611697951}, "hype_score": -26.21, "hate_watch_flag": false, "rank": 5, "status": "BUBBLE"}, {"id": "sol_caleb", "display": "Sol & Caleb", "ship_names": [], "islanders": ["Sol Dean", "Caleb McDaniel"], "raw": {"share_of_voice": 0.13647821389989198, "eng_weighted_sentiment": 0.03808284364710052, "velocity": 2.5811978739034616, "unique_authors": 377, "post_count": 34, "comment_count": 345, "n_save": 105, "n_eliminate": 65, "n_neutral": 108, "net_intent": 40, "sentiment_source": "haiku:claude-haiku-4-5-20251001"}, "z": {"sov": -0.1216083752458793, "sentiment": -0.3805964164693066, "velocity": -1.1879733460966648, "authors": 0.010878141045893583}, "hype_score": -39.27, "hate_watch_flag": false, "rank": 6, "status": "VULNERABLE"}, {"id": "jen_gabe", "display": "Jen & Gabriel", "ship_names": [], "islanders": ["Jen Terry", "Gabriel Vasconcelos"], "raw": {"share_of_voice": 0.03132877205617573, "eng_weighted_sentiment": 0.25062626608244903, "velocity": 2.5965612104539204, "unique_authors": 85, "post_count": 17, "comment_count": 70, "n_save": 26, "n_eliminate": 5, "n_neutral": 32, "net_intent": 21, "sentiment_source": "haiku:claude-haiku-4-5-20251001"}, "z": {"sov": -2.1261851413957022, "sentiment": 0.8214775225445996, "velocity": -1.0720341679759307, "authors": -2.2126138887347295}, "hype_score": -104.4, "hate_watch_flag": false, "rank": 7, "status": "VULNERABLE"}]}</script><!--HYPE_DATA_END-->
+<script>
+(function(){
+  "use strict";
+  var DEFAULTS = {sov:0.35, sentiment:0.30, velocity:0.20, authors:0.15};
+  var LABELS = {sov:"Share of Voice", sentiment:"Sentiment", velocity:"Velocity", authors:"Reach"};
+  var CLS = {sov:"sov", sentiment:"sent", velocity:"vel", authors:"auth"};
+  var weights = Object.assign({}, DEFAULTS);
+  var DATA = null;
+
+  function mean(a){return a.reduce(function(s,x){return s+x},0)/(a.length||1)}
+  function std(a){var m=mean(a);return Math.sqrt(mean(a.map(function(x){return (x-m)*(x-m)})))}
+  function z(vals){var s=std(vals);if(s<1e-9)return vals.map(function(){return 0});var m=mean(vals);return vals.map(function(x){return (x-m)/s})}
+  function pct75(a){var s=a.slice().sort(function(x,y){return x-y});if(!s.length)return 0;var i=0.75*(s.length-1);var lo=Math.floor(i),hi=Math.ceil(i);return s[lo]+(s[hi]-s[lo])*(i-lo)}
+  function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
+  function hue(id){var h=0;for(var i=0;i<id.length;i++)h=(h*31+id.charCodeAt(i))%360;return h}
+  function initials(name){return name.split(/\s+/).map(function(w){return w[0]}).join("").slice(0,2).toUpperCase()}
+
+  function rank(couples, w){
+    var sov=z(couples.map(function(c){return c.raw.share_of_voice}));
+    var sent=z(couples.map(function(c){return c.raw.eng_weighted_sentiment}));
+    var vel=z(couples.map(function(c){return c.raw.velocity}));
+    var auth=z(couples.map(function(c){return c.raw.unique_authors}));
+    var sovQ=pct75(couples.map(function(c){return c.raw.share_of_voice}));
+    var out=couples.map(function(c,i){
+      var hype=100*(w.sov*sov[i]+w.sentiment*sent[i]+w.velocity*vel[i]+w.authors*auth[i]);
+      var hate=(c.raw.share_of_voice>=sovQ)&&(c.raw.net_intent<0)&&(c.raw.eng_weighted_sentiment<0);
+      return Object.assign({}, c, {hype:hype, hate_watch_flag:hate, z:{sov:sov[i],sent:sent[i],vel:vel[i],auth:auth[i]}});
+    });
+    // "buzz rank" = where they'd sit on raw HypeScore, ignoring the hate-watch demotion
+    out.slice().sort(function(a,b){return b.hype-a.hype}).forEach(function(c,i){c.buzz_rank=i+1});
+    out.sort(function(a,b){
+      if(a.hate_watch_flag!==b.hate_watch_flag)return a.hate_watch_flag?1:-1;
+      if(Math.abs(a.hype-b.hype)>1e-9)return b.hype-a.hype;
+      return b.raw.net_intent-a.raw.net_intent;
+    });
+    var n=out.length, ns=DATA.meta.cut_line.n_safe, nv=DATA.meta.cut_line.n_vulnerable;
+    out.forEach(function(c,i){
+      c.rank=i+1;
+      c.status = i<ns ? "SAFE" : (i>=n-nv ? "VULNERABLE" : "BUBBLE");
+    });
+    return out;
+  }
+
+  function sentBar(v){
+    var w=clamp(Math.abs(v)*100,0,50);
+    if(v>=0) return '<div class="sent-track"><div class="sent-mid"></div><div class="sent-fill pos" style="width:'+w+'%"></div></div>';
+    return '<div class="sent-track"><div class="sent-mid"></div><div class="sent-fill neg" style="width:'+w+'%"></div></div>';
+  }
+  function bar(cls,frac){return '<div class="track"><div class="fill '+cls+'" style="width:'+clamp(frac*100,0,100)+'%"></div></div>'}
+
+  function rowHTML(c, maxes){
+    var r=c.raw;
+    var statusCls = c.hate_watch_flag ? "hate" : (c.status==="SAFE"?"safe":(c.status==="VULNERABLE"?"vulnerable":""));
+    var tags="";
+    if(c.status==="SAFE") tags+='<span class="tag safe">Safe</span>';
+    else if(c.status==="VULNERABLE") tags+='<span class="tag vuln">Vulnerable</span>';
+    else tags+='<span class="tag bubble">On the bubble</span>';
+    if(c.hate_watch_flag) tags+='<span class="tag hate">🔥 Loud but loathed</span>';
+    (c.ship_names||[]).forEach(function(s){tags+='<span class="tag ship">#'+s+'</span>'});
+
+    var hateNote = c.hate_watch_flag
+      ? '<div class="hate-note">Buzz alone would put them at #'+c.buzz_rank+', but sentiment runs negative, so the model pushes them below the safe line.</div>'
+      : '';
+
+    var monos="";
+    (c.islanders||[]).forEach(function(name){
+      var h=hue(name);
+      monos+='<span class="mono" style="background:oklch(0.82 0.13 '+h+')">'+initials(name)+'</span>';
+    });
+
+    var totIntent=(r.n_save+r.n_neutral+r.n_eliminate)||1;
+    var intentBar='<div class="intent" title="'+r.n_save+' save · '+r.n_neutral+' neutral · '+r.n_eliminate+' eliminate">'+
+      '<div class="s" style="width:'+(100*r.n_save/totIntent)+'%"></div>'+
+      '<div class="n" style="width:'+(100*r.n_neutral/totIntent)+'%"></div>'+
+      '<div class="e" style="width:'+(100*r.n_eliminate/totIntent)+'%"></div></div>';
+
+    var heatFrac = maxes.hype>maxes.minHype ? (c.hype-maxes.minHype)/(maxes.hype-maxes.minHype) : 0.5;
+
+    return ''+
+    '<div class="row '+statusCls+'" data-id="'+c.id+'">'+
+      '<div class="rank">'+c.rank+'</div>'+
+      '<div class="who">'+
+        '<div class="names"><div class="monos">'+monos+'</div><span class="cname">'+c.display+'</span></div>'+
+        '<div class="tags">'+tags+'</div>'+
+        hateNote+
+        '<div class="signals">'+
+          '<div class="sig"><span class="lab">Voice</span>'+bar("sov", r.share_of_voice/(maxes.sov||1))+'<span class="num">'+Math.round(r.share_of_voice*100)+'%</span></div>'+
+          '<div class="sig"><span class="lab">Sentiment</span>'+sentBar(r.eng_weighted_sentiment)+'<span class="num">'+(r.eng_weighted_sentiment>=0?"+":"")+r.eng_weighted_sentiment.toFixed(2)+'</span></div>'+
+          '<div class="sig"><span class="lab">Velocity</span>'+bar("vel", r.velocity/3)+'<span class="num">'+r.velocity.toFixed(1)+'×</span></div>'+
+          '<div class="sig"><span class="lab">Reach</span>'+bar("auth", r.unique_authors/(maxes.auth||1))+'<span class="num">'+r.unique_authors+'</span></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="score">'+
+        '<div class="lbl">HypeScore</div>'+
+        '<div class="hype">'+(c.hype>=0?"":"")+c.hype.toFixed(0)+'</div>'+
+        '<div class="heatbar"><i style="width:'+clamp(heatFrac*100,3,100)+'%"></i></div>'+
+        intentBar+
+      '</div>'+
+    '</div>';
+  }
+
+  var board=document.getElementById("board");
+
+  function render(animate){
+    var ranked=rank(DATA.couples, weights);
+    var maxes={
+      sov:Math.max.apply(null,ranked.map(function(c){return c.raw.share_of_voice})),
+      auth:Math.max.apply(null,ranked.map(function(c){return c.raw.unique_authors})),
+      hype:Math.max.apply(null,ranked.map(function(c){return c.hype})),
+      minHype:Math.min.apply(null,ranked.map(function(c){return c.hype}))
+    };
+    var ns=DATA.meta.cut_line.n_safe;
+
+    // FLIP: capture old positions
+    var first={};
+    if(animate){Array.prototype.forEach.call(board.querySelectorAll(".row"),function(el){first[el.dataset.id]=el.getBoundingClientRect().top})}
+
+    var html="";
+    ranked.forEach(function(c,i){
+      html+=rowHTML(c,maxes);
+      if(i===ns-1) html+='<div class="safeline">Safe line · below is at risk</div>';
+    });
+    board.innerHTML=html;
+
+    if(animate){
+      Array.prototype.forEach.call(board.querySelectorAll(".row"),function(el){
+        var id=el.dataset.id;
+        if(first[id]==null)return;
+        var delta=first[id]-el.getBoundingClientRect().top;
+        if(!delta)return;
+        el.style.transform="translateY("+delta+"px)";
+        el.style.transition="transform 0s";
+        requestAnimationFrame(function(){
+          el.style.transition="transform .62s cubic-bezier(.16,1,.3,1)";
+          el.style.transform="translateY(0)";
+        });
+      });
+    }
+  }
+
+  function buildSliders(){
+    var s=document.getElementById("sliders");
+    s.innerHTML=Object.keys(DEFAULTS).map(function(k){
+      return '<div class="slider '+CLS[k]+'">'+
+        '<label><span>'+LABELS[k]+'</span><span class="val" id="v-'+k+'">'+Math.round(weights[k]*100)+'%</span></label>'+
+        '<input type="range" min="0" max="100" value="'+Math.round(weights[k]*100)+'" data-k="'+k+'">'+
+      '</div>';
+    }).join("");
+    Array.prototype.forEach.call(s.querySelectorAll("input"),function(inp){
+      inp.addEventListener("input",function(){
+        weights[inp.dataset.k]=(+inp.value)/100;
+        document.getElementById("v-"+inp.dataset.k).textContent=inp.value+"%";
+        render(true);
+      });
+    });
+  }
+
+  var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  function fmtDate(iso){
+    if(!iso)return iso;
+    var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso);            // treat YYYY-MM-DD as a local date (no TZ shift)
+    if(m)return MON[(+m[2])-1]+" "+(+m[3]);
+    try{return new Date(iso).toLocaleDateString("en-US",{month:"short",day:"numeric"})}catch(e){return iso}
+  }
+
+  function paintMeta(){
+    var m=DATA.meta, v=m.vote||{};
+    document.getElementById("k-show").textContent=(m.show||"Love Island USA")+" · Season "+(m.season||"");
+    document.getElementById("dek").innerHTML='A for-fun forecast of who America keeps and who is in danger for <b>'+(v.title||"the vote")+'</b>, read straight from the TikTok tea leaves.';
+    var mr=document.getElementById("meta-row");
+    var sample = m.scan && (m.scan.sample || m.scan.dry_run);
+    mr.innerHTML=
+      '<span class="chip badge-acc"><span class="tick">◎</span> '+(m.accuracy?m.accuracy.label:"Track record pending")+'</span>'+
+      (v.episode?'<span class="chip">Episode <b>'+v.episode+'</b></span>':"")+
+      (v.vote_closed?'<span class="chip">Vote closed <b>'+fmtDate(v.vote_closed)+'</b></span>':"")+
+      (v.results_air?'<span class="chip">Results air <b>'+fmtDate(v.results_air)+'</b></span>':"")+
+      (m.scan?'<span class="chip"><b>'+(m.scan.posts||0)+'</b> posts · <b>'+(m.scan.comments||0)+'</b> comments</span>':"")+
+      (sample?'<span class="chip" style="color:var(--warn);border-color:var(--warn)">⚠ sample data</span>':"");
+    document.getElementById("disclaimer").textContent=m.disclaimer||"";
+    if(m.generated_at) document.getElementById("gen").textContent="Generated "+new Date(m.generated_at).toLocaleString();
+  }
+
+  function boot(data){
+    DATA=data;
+    if(!DATA||!DATA.couples||!DATA.couples.length){
+      board.innerHTML='<div class="row"><div class="who"><span class="cname">No data yet</span><div class="tags"><span class="tag bubble">Run the pipeline to populate the board</span></div></div></div>';
+      return;
+    }
+    if(!DATA.meta.cut_line) DATA.meta.cut_line={n_safe:4,n_vulnerable:2};
+    paintMeta();
+    buildSliders();
+    render(false);
+  }
+
+  document.getElementById("reset").addEventListener("click",function(){
+    weights=Object.assign({},DEFAULTS);
+    Array.prototype.forEach.call(document.querySelectorAll("#sliders input"),function(inp){
+      inp.value=Math.round(DEFAULTS[inp.dataset.k]*100);
+      document.getElementById("v-"+inp.dataset.k).textContent=inp.value+"%";
+    });
+    render(true);
+  });
+
+  // Load: prefer inlined data (works offline), else fetch ./data.json
+  function loadInline(){
+    try{var t=document.getElementById("hype-data").textContent.trim();if(!t)return null;var d=JSON.parse(t);return (d&&d.couples&&d.couples.length)?d:null}catch(e){return null}
+  }
+  var inline=loadInline();
+  if(inline){boot(inline)}
+  else{
+    fetch("./data.json").then(function(r){return r.json()}).then(boot).catch(function(){boot(null)});
+  }
+})();
+</script>
+</body>
+</html>

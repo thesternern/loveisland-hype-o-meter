@@ -1,0 +1,270 @@
+{
+  "meta": {
+    "show": "Love Island USA",
+    "season": 8,
+    "vote": {
+      "type": "favorite_couple",
+      "title": "America's Favorite Couple",
+      "stakes": "Top couples are SAFE. The least-voted couples are VULNERABLE and at risk of being dumped from the Island.",
+      "episode": 13,
+      "vote_closed": "2026-06-16",
+      "results_air": "2026-06-18"
+    },
+    "cut_line": {
+      "n_safe": 4,
+      "n_vulnerable": 2
+    },
+    "generated_at": "2026-06-17T20:50:16.557037+00:00",
+    "scan": {
+      "platform": "tiktok",
+      "posts": 573,
+      "comments": 3251,
+      "general_items": 1047,
+      "dry_run": false
+    },
+    "velocity_method": "intra_pull_recency",
+    "weights": {
+      "sov": 0.35,
+      "sentiment": 0.3,
+      "velocity": 0.2,
+      "authors": 0.15
+    },
+    "accuracy": {
+      "correct": 0,
+      "scored": 0,
+      "label": "Track record starts at the next result"
+    },
+    "disclaimer": "Entertainment only: predictions come from public TikTok buzz + sentiment, NOT real vote data. Social volume skews younger and more online than the actual voting base, and can be brigaded. A fun model, not a poll."
+  },
+  "couples": [
+    {
+      "id": "trinity_bryce",
+      "display": "Trinity & Bryce",
+      "ship_names": [],
+      "islanders": [
+        "Trinity Tatum",
+        "Bryce Dettloff"
+      ],
+      "raw": {
+        "share_of_voice": 0.14656103709038532,
+        "eng_weighted_sentiment": 0.4520628446748014,
+        "velocity": 2.9175396222809784,
+        "unique_authors": 381,
+        "post_count": 61,
+        "comment_count": 346,
+        "n_save": 172,
+        "n_eliminate": 21,
+        "n_neutral": 91,
+        "net_intent": 151,
+        "sentiment_source": "haiku:claude-haiku-4-5-20251001"
+      },
+      "z": {
+        "sov": 0.07061131465889817,
+        "sentiment": 1.9607348974165413,
+        "velocity": 1.3502243784995234,
+        "authors": 0.041336935974395264
+      },
+      "hype_score": 88.92,
+      "hate_watch_flag": false,
+      "rank": 1,
+      "status": "SAFE"
+    },
+    {
+      "id": "kaniya",
+      "display": "Aniya & KC",
+      "ship_names": [
+        "Kaniya",
+        "KCniya"
+      ],
+      "islanders": [
+        "Aniya Harvey",
+        "KC Chandler"
+      ],
+      "raw": {
+        "share_of_voice": 0.17464890169247388,
+        "eng_weighted_sentiment": 0.08165227016933647,
+        "velocity": 2.945319294172968,
+        "unique_authors": 455,
+        "post_count": 62,
+        "comment_count": 423,
+        "n_save": 118,
+        "n_eliminate": 63,
+        "n_neutral": 196,
+        "net_intent": 55,
+        "sentiment_source": "haiku:claude-haiku-4-5-20251001"
+      },
+      "z": {
+        "sov": 0.6060804508222066,
+        "sentiment": -0.13418242934113672,
+        "velocity": 1.5598632363767022,
+        "authors": 0.6048246421516764
+      },
+      "hype_score": 57.46,
+      "hate_watch_flag": false,
+      "rank": 2,
+      "status": "SAFE"
+    },
+    {
+      "id": "kayda_zach",
+      "display": "Kayda & Zach",
+      "ship_names": [
+        "Zryce"
+      ],
+      "islanders": [
+        "Kayda Bosse",
+        "Zach Georgiou"
+      ],
+      "raw": {
+        "share_of_voice": 0.21498019445444724,
+        "eng_weighted_sentiment": -0.004806365203565102,
+        "velocity": 2.704860164424191,
+        "unique_authors": 535,
+        "post_count": 91,
+        "comment_count": 506,
+        "n_save": 113,
+        "n_eliminate": 84,
+        "n_neutral": 196,
+        "net_intent": 29,
+        "sentiment_source": "haiku:claude-haiku-4-5-20251001"
+      },
+      "z": {
+        "sov": 1.3749592104413169,
+        "sentiment": -0.623163321780112,
+        "velocity": -0.25475781180098134,
+        "authors": 1.21400054072171
+      },
+      "hype_score": 42.54,
+      "hate_watch_flag": false,
+      "rank": 3,
+      "status": "SAFE"
+    },
+    {
+      "id": "melanie_sincere",
+      "display": "Melanie & Sincere",
+      "ship_names": [],
+      "islanders": [
+        "Melanie Moreno",
+        "Sincere Rhea"
+      ],
+      "raw": {
+        "share_of_voice": 0.1321570039611091,
+        "eng_weighted_sentiment": 0.05504005621470214,
+        "velocity": 2.73119930543591,
+        "unique_authors": 356,
+        "post_count": 48,
+        "comment_count": 319,
+        "n_save": 92,
+        "n_eliminate": 65,
+        "n_neutral": 122,
+        "net_intent": 27,
+        "sentiment_source": "haiku:claude-haiku-4-5-20251001"
+      },
+      "z": {
+        "sov": -0.20398824234792715,
+        "sentiment": -0.28469213925257286,
+        "velocity": -0.05598989759984352,
+        "authors": -0.14903053232874025
+      },
+      "hype_score": -19.04,
+      "hate_watch_flag": false,
+      "rank": 4,
+      "status": "SAFE"
+    },
+    {
+      "id": "kenzie_corbin",
+      "display": "Kenzie & Corbin",
+      "ship_names": [],
+      "islanders": [
+        "Kenzie Annis",
+        "Corbin Mims"
+      ],
+      "raw": {
+        "share_of_voice": 0.16384587684551674,
+        "eng_weighted_sentiment": -0.1350147617114939,
+        "velocity": 2.6936530146832847,
+        "unique_authors": 440,
+        "post_count": 60,
+        "comment_count": 395,
+        "n_save": 78,
+        "n_eliminate": 116,
+        "n_neutral": 132,
+        "net_intent": -38,
+        "sentiment_source": "haiku:claude-haiku-4-5-20251001"
+      },
+      "z": {
+        "sov": 0.400130783067088,
+        "sentiment": -1.3595781131180131,
+        "velocity": -0.3393323914028254,
+        "authors": 0.4906041611697951
+      },
+      "hype_score": -26.21,
+      "hate_watch_flag": false,
+      "rank": 5,
+      "status": "BUBBLE"
+    },
+    {
+      "id": "sol_caleb",
+      "display": "Sol & Caleb",
+      "ship_names": [],
+      "islanders": [
+        "Sol Dean",
+        "Caleb McDaniel"
+      ],
+      "raw": {
+        "share_of_voice": 0.13647821389989198,
+        "eng_weighted_sentiment": 0.03808284364710052,
+        "velocity": 2.5811978739034616,
+        "unique_authors": 377,
+        "post_count": 34,
+        "comment_count": 345,
+        "n_save": 105,
+        "n_eliminate": 65,
+        "n_neutral": 108,
+        "net_intent": 40,
+        "sentiment_source": "haiku:claude-haiku-4-5-20251001"
+      },
+      "z": {
+        "sov": -0.1216083752458793,
+        "sentiment": -0.3805964164693066,
+        "velocity": -1.1879733460966648,
+        "authors": 0.010878141045893583
+      },
+      "hype_score": -39.27,
+      "hate_watch_flag": false,
+      "rank": 6,
+      "status": "VULNERABLE"
+    },
+    {
+      "id": "jen_gabe",
+      "display": "Jen & Gabriel",
+      "ship_names": [],
+      "islanders": [
+        "Jen Terry",
+        "Gabriel Vasconcelos"
+      ],
+      "raw": {
+        "share_of_voice": 0.03132877205617573,
+        "eng_weighted_sentiment": 0.25062626608244903,
+        "velocity": 2.5965612104539204,
+        "unique_authors": 85,
+        "post_count": 17,
+        "comment_count": 70,
+        "n_save": 26,
+        "n_eliminate": 5,
+        "n_neutral": 32,
+        "net_intent": 21,
+        "sentiment_source": "haiku:claude-haiku-4-5-20251001"
+      },
+      "z": {
+        "sov": -2.1261851413957022,
+        "sentiment": 0.8214775225445996,
+        "velocity": -1.0720341679759307,
+        "authors": -2.2126138887347295
+      },
+      "hype_score": -104.4,
+      "hate_watch_flag": false,
+      "rank": 7,
+      "status": "VULNERABLE"
+    }
+  ]
+}
